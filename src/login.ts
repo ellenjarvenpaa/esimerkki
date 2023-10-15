@@ -1,5 +1,5 @@
 //import { pwaInfo } from 'virtual:pwa-info';
-import {fetchData} from './functions';
+import {fetchData} from './functions.ts';
 import {LoginUser, User} from './interfaces/User';
 import {apiUrl} from './variables';
 import './dialogi.css';
