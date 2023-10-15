@@ -1,4 +1,5 @@
-const apiUrl = 'https://sodexo-webscrape-r73sdlmfxa-lz.a.run.app/api/v1';
+const apiUrl = 'https://student-restaurants.azurewebsites.net/api/v1';
+const uploadUrl = 'https://student-restaurants.azurewebsites.net/uploads/';
 
 const positionOptions = {
   enableHighAccuracy: true,
@@ -6,4 +7,4 @@ const positionOptions = {
   maximumAge: 0,
 };
 
-export {apiUrl, positionOptions};
+export {apiUrl, positionOptions, uploadUrl};

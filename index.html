@@ -4,29 +4,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
+  <link rel="stylesheet" href="./src/main.css">
+  <link rel="stylesheet" href="./src/dialogi.css">
+  <link rel="stylesheet" href="./src/dark-mode.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caprasimo&display=swap" rel="stylesheet">
   <title>Document</title>
   <script src="src/main.ts" type="module"></script>
+  <script src="./src/dialogi.js" defer></script>
+  <script src="src/login.ts" defer></script>
+  <script src="./src/dark-mode.js" defer></script>
+  <script src="https://kit.fontawesome.com/4b7fc9f2a3.js" crossorigin="anonymous"></script>
 </head>
-
 <body>
-  <h1>Restaurants</h1>
-  <h2>Filter restaurants</h2>
+  <h1>Student lunch finder</h1>
+  <img src="./src/food.gif" alt="floating sandwich" class="sandwich">
+  <section id="profile">
+    <h2>Profile</h2>
+    <p style="margin-bottom: 0;">Username: <span id="username-target"></span></p>
+    <p>Email: <span id="email-target"></span></p>
+  </section>
   <div id="napit">
-    <button id="sodexo">Sodexo</button>
-    <button id="compass">Compass Group</button>
-    <button id="reset">Show all</button>
+    <button id="open_dialog">Login</button>
+    <button id="find-closest">Closest to me</button>
+    <div>
+      <input type="checkbox" class="checkbox" id="checkbox">
+      <label for="checkbox" class="checkbox-label">
+          <i class="fas fa-moon"></i>
+          <i class="fas fa-sun"></i>
+          <span class="ball"></span>
+      </label>
+    </div>
   </div>
-  <table>
-    <tr>
-      <th>Name</th>
-      <th>Address</th>
-    </tr>
-    <!-- add restaurants here -->
-  </table>
-  <!-- modal -->
-  <dialog>
-    <!-- add restaurant info here when restaurant is clicked -->
-  </dialog>
+  <div id="map"></div>
+  <dialog id="login">
+    <section id="login">
+      <h2>Login</h2>
+      <p>Login to get user data</p>
+      <form id="login-form">
+        <div class="form-control" style="padding-top: 5px;">
+          <input id="username" type="text" name="username">
+          <label for="username">Usename</label>
+        </div>
+        <div class="form-control" style="padding-top: 5px;">
+          <input id="password" type="password" name="password">
+          <label for="password">Password</label>
+        </div>
+        <div class="form-control" style="padding-top: 5px;">
+          <input type="submit" value="Login" class="button">
+        <button id="close_dialog">Close</button>
+        </div>
+      </form>
+    </section>
+</dialog>
 </body>
 
 </html>

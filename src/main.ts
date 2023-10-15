@@ -1,112 +1,144 @@
-import {errorModal, restaurantModal, restaurantRow} from './components';
 import {fetchData} from './functions';
 import { Restaurant } from './interfaces/Restaurant';
+import { Menu, Weekly } from './interfaces/Menu';
 import {apiUrl, positionOptions} from './variables';
-import 'main.css';
-import { Menu } from './interfaces/Menu';
+import './main.css';
+import 'leaflet.locatecontrol'
+import 'leaflet.locatecontrol/dist/L.Control.Locate.min.css'
+import * as L from 'leaflet';
 
-const modal = document.querySelector('dialog');
-if (!modal) {
-  throw new Error('Modal not found');
-}
-modal.addEventListener('click', () => {
-  modal.close();
-});
 
-const calculateDistance = (x1: number, y1: number, x2: number, y2: number) =>
-  Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+const map = L.map('map').setView([60.1699, 24.9384], 13);
 
-const createTable = (restaurants: Restaurant[]) => {
-  const table = document.querySelector('table');
-  if (!table) {
-    throw new Error('Table not found');
-  }
-  table.innerHTML = '';
-  restaurants.forEach((restaurant) => {
-    const tr = restaurantRow(restaurant);
-    table.appendChild(tr);
-    tr.addEventListener('click', async () => {
-      try {
-        // remove all highlights
-        const allHighs = document.querySelectorAll('.highlight');
-        allHighs.forEach((high) => {
-          high.classList.remove('highlight');
-        });
-        // add highlight
-        tr.classList.add('highlight');
-        // add restaurant data to modal
-        modal.innerHTML = '';
-
-        // fetch menu
-        const menu = await fetchData<Menu>(
-          apiUrl + `/restaurants/daily/${restaurant._id}/fi`
-        );
-        console.log(menu);
-
-        const menuHtml = restaurantModal(restaurant, menu);
-        modal.insertAdjacentHTML('beforeend', menuHtml);
-
-        modal.showModal();
-      } catch (error) {
-        modal.innerHTML = errorModal((error as Error).message);
-        modal.showModal();
-      }
-    });
-  });
-};
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+}).addTo(map);
 
 const error = (err: GeolocationPositionError) => {
   console.warn(`ERROR(${err.code}): ${err.message}`);
 };
 
-const success = async (pos: GeolocationPosition) => {
-  try {
-    const crd = pos.coords;
-    const restaurants = await fetchData<Restaurant[]>(apiUrl + '/restaurants');
-    console.log(restaurants);
-    restaurants.sort((a, b) => {
-      const x1 = crd.latitude;
-      const y1 = crd.longitude;
-      const x2a = a.location.coordinates[1];
-      const y2a = a.location.coordinates[0];
-      const distanceA = calculateDistance(x1, y1, x2a, y2a);
-      const x2b = b.location.coordinates[1];
-      const y2b = b.location.coordinates[0];
-      const distanceB = calculateDistance(x1, y1, x2b, y2b);
-      return distanceA - distanceB;
-    });
-    createTable(restaurants);
-    // buttons for filtering
-    const sodexoBtn = document.querySelector('#sodexo');
-    const compassBtn = document.querySelector('#compass');
-    const resetBtn = document.querySelector('#reset');
+const success = (position: GeolocationPosition) => {
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
 
-    if (!sodexoBtn || !compassBtn || !resetBtn) {
-      throw new Error('Button not found');
-    }
-    sodexoBtn.addEventListener('click', () => {
-      const sodexoRestaurants = restaurants.filter(
-        (restaurant) => restaurant.company === 'Sodexo'
-      );
-      console.log(sodexoRestaurants);
-      createTable(sodexoRestaurants);
-    });
+  console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+}
 
-    compassBtn.addEventListener('click', () => {
-      const compassRestaurants = restaurants.filter(
-        (restaurant) => restaurant.company === 'Compass Group'
-      );
-      console.log(compassRestaurants);
-      createTable(compassRestaurants);
-    });
+(async () => {
+  const restaurants = await fetchData<Restaurant[]>(apiUrl + '/restaurants');
 
-    resetBtn.addEventListener('click', () => {
-      createTable(restaurants);
-    });
-  } catch (error) {
-    modal.innerHTML = errorModal((error as Error).message);
-    modal.showModal();
-  }
-};
+  restaurants.forEach(async (restaurant: Restaurant) => {
+    const menu = await fetchData<Menu>(apiUrl + `/restaurants/daily/${restaurant._id}/fi`);
+    const menu2 = await fetchData<Weekly>(apiUrl + `/restaurants/weekly/${restaurant._id}/fi`);
 
+    const marker = L.marker([
+      restaurant.location.coordinates[1],
+      restaurant.location.coordinates[0],
+    ]).addTo(map);
+
+    const openDailyMenuDialog = () => {
+      let infoHtml = `
+      <h3>${restaurant.name} - Menu of the day</h3>
+        <table class="table">
+          <tr>
+            <th>Course</th>
+            <th>Diet</th>
+            <th>Price</th>
+          </tr>
+      `;
+
+      menu.courses.forEach((course) => {
+        const { name, diets, price } = course;
+        infoHtml += `
+          <tr>
+            <td>${name}</td>
+            <td>${diets ?? ' - '}</td>
+            <td>${price ?? ' - '}</td>
+          </tr>
+        `;
+      });
+
+      const infoPopup = L.popup()
+        .setLatLng(marker.getLatLng())
+        .setContent(infoHtml);
+
+      map.openPopup(infoPopup);
+    };
+
+    const openWeeklyMenuDialog = () => {
+      let infoHtml = `
+        <h3>${restaurant.name} - Weekly Menu</h3>
+      `;
+
+      menu2.days.forEach(day => {
+          infoHtml += `
+            <h4>${day.date}</h4>
+            <table>
+              <tr>
+                <th>Course</th>
+                <th>Diet</th>
+                <th>Price</th>
+              </tr>
+          `;
+
+          day.courses.forEach(course => {
+              const { name, diets, price } = course;
+              infoHtml += `
+                <tr>
+                  <td>${name}</td>
+                  <td>${diets ?? ' - '}</td>
+                  <td>${price ?? ' - '}</td>
+                </tr>
+              `;
+          });
+
+          infoHtml += `</table>`;
+      });
+
+      const weeklyMenuDialog = L.popup()
+          .setLatLng(marker.getLatLng())
+          .setContent(infoHtml);
+
+      map.openPopup(weeklyMenuDialog);
+  };
+
+    const openPopup = () => {
+      const popupContent = document.createElement('div');
+
+      const popupHtml = `
+        <h3>${restaurant.name}</h3>
+        <p>${restaurant.address}</p>
+        <button class="info-button">Daily Menu</button>
+        <button class="weekly-menu">Weekly Menu</button>
+      `;
+
+      popupContent.innerHTML = popupHtml;
+
+      const dailyMenu = popupContent.querySelector('.info-button');
+      dailyMenu?.addEventListener('click', openDailyMenuDialog);
+
+      const weeklyMenu = popupContent.querySelector('.weekly-menu');
+      weeklyMenu?.addEventListener('click', openWeeklyMenuDialog);
+
+      const nearestRes = document.querySelector('#find-closest')
+      nearestRes?.addEventListener('click', () => {
+        navigator.geolocation.getCurrentPosition(success, error, positionOptions);
+        map.locate({setView: true, watch: true})
+      });
+
+      const popup = L.popup()
+        .setLatLng(marker.getLatLng())
+        .setContent(popupContent);
+
+      map.openPopup(popup);
+    };
+
+    marker.on('click', openPopup);
+  });
+
+})();
+
+L.control.locate().addTo(map);
 navigator.geolocation.getCurrentPosition(success, error, positionOptions);

@@ -1,15 +1,40 @@
 body {
   background-color: #f0f0f0;
+  background-image: url(./GinghamPurple_900x.jpg);
   font-family: sans-serif;
   margin: 0;
   padding: 0;
+  background-color: #EFCEFA;
+  font-family: 'Caprasimo', serif;
 }
 
-table {
+h1 {
+  background-color: #D4B2D8;
+  margin-left: 400px;
+  margin-right: 400px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-radius: 10px;
+  border: 2px solid black;
+}
+
+.sandwich {
+  height: 150px;
+  width: 150px;
+  position: absolute;
+  left: 200px;
+  bottom: 420px;
+}
+
+
+.table {
   border-collapse: collapse;
   border-spacing: 0;
   margin: 0;
   padding: 0;
+  height: 200px;
+  width: 200px;
+  overflow: scroll;
 }
 
 th {
@@ -25,7 +50,58 @@ td {
   padding: 0.5em 1em;
 }
 
-.highlight {
+#map {
+  height: 400px;
+  width: 1000px;
+  justify-content: center;
+  margin: auto;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 2px solid black;
+}
+
+h1 {
+  text-align: center;
+}
+
+#title {
+  color: black;
+}
+
+#napit {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+#profile {
+  text-align: left;
+  justify-content: right;
+  background-color: #D4B2D8;
+  width: 200px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 15px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  height: auto;
+  border: 2px solid black;
+  position: absolute;
+  left: 915px;
+  bottom: 400px;
+  top: 10px;
+}
+
+.leaflet-popup-content-wrapper {
+  max-height: 100vh;
+  background-color: #F5F5F5;
+  border: 1px solid #DDDDDD;
+  border-radius: 4px 0 4px 0;
+  overflow-y: scroll;
+  overflow-x: scroll;
+  color: #3B3C3E;
+  font-size: 12px;
   font-weight: bold;
-  background-color: rgb(194, 194, 235);
+  left: -1px;
+  padding: 10px 7px 5px;
 }
