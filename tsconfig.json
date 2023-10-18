@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": ["dist/assets/main.ts", "dist/login.ts", "dist/dialogi.js", "dist/dark-mode.js", "dist/functions.ts", "dist/variables.ts", "dist/interfaces"]
 }

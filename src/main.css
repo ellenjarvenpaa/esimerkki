@@ -10,20 +10,21 @@ body {
 
 h1 {
   background-color: #D4B2D8;
-  margin-left: 400px;
-  margin-right: 400px;
   padding-top: 10px;
   padding-bottom: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
   border-radius: 10px;
   border: 2px solid black;
+  grid-row-start: 1;
+  grid-column-start: 2;
 }
 
 .sandwich {
   height: 150px;
   width: 150px;
-  position: absolute;
-  left: 200px;
-  bottom: 420px;
+  grid-row-start: 1;
+  justify-content: center;
 }
 
 
@@ -52,7 +53,7 @@ td {
 
 #map {
   height: 400px;
-  width: 1000px;
+  width: auto;
   justify-content: center;
   margin: auto;
   margin-bottom: 10px;
@@ -83,13 +84,38 @@ h1 {
   padding-bottom: 5px;
   padding-left: 15px;
   border-radius: 10px;
-  margin-bottom: 10px;
-  height: auto;
   border: 2px solid black;
-  position: absolute;
-  left: 915px;
-  bottom: 400px;
-  top: 10px;
+  grid-row-start: 1;
+}
+
+.grid {
+  display: grid;
+  column-gap: 50px;
+  justify-content: center;
+}
+
+@media only screen and (max-width: 600px){
+  h1 {
+    grid-row-start: 1;
+    grid-row-end: 2;
+    grid-column-start: 1;
+  }
+
+  #profile {
+    grid-row-start: 2;
+    grid-row-end: 3;
+  }
+
+  .sandwich {
+    grid-row-start: 3;
+    grid-row-end: 4;
+  }
+
+  .grid {
+    justify-content: center;
+    column-gap: 0;
+  }
+
 }
 
 .leaflet-popup-content-wrapper {
@@ -104,4 +130,152 @@ h1 {
   font-weight: bold;
   left: -1px;
   padding: 10px 7px 5px;
+}
+
+button {
+  background-color: #A88FAC;
+  border: none;
+  color: black;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+ /* display: inline-block;*/
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 16px;
+}
+
+button :hover {
+  background-color: #D4B2D8;
+}
+
+button:focus {
+  outline: none;
+  border: 0.0625rem solid transparent;
+  box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.2rem var(--dark-color-bg);
+}
+
+button.cta {
+  background-color: #AA4693ff;
+  color: white;
+}
+
+button.cta:focus {
+  box-shadow: 0 0 0 0.125rem #fff, 0 0 0 0.2rem var(--cta-color);
+}
+
+#open_dialog {
+  justify-content: center;
+  text-align: center;
+}
+
+dialog {
+  border: none !important;
+  border-radius: calc(5px * var(--ratio));
+  box-shadow: 0 0 #0000, 0 0 #0000, 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 1.6rem;
+  max-width: 400px;
+  border-radius: 5px;
+}
+
+dialog img {
+  display: block;
+  max-width: 75%;
+  margin: 1rem 0 auto 2rem;
+}
+
+dialog::backdrop {
+  backdrop-filter: blur(5px);
+}
+
+dialog h1 {
+  margin: 2rem 0 1rem;
+  font-weight: 900;
+}
+
+dialog h2 {
+  margin: 2rem 0 1rem;
+  font-weight: 800;
+}
+
+dialog p {
+  color: var(--grey-color);
+  letter-spacing: var(--leading, 0.025em);
+  line-height: 1.625;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.flex.flex-space-between {
+  justify-content: space-between;
+}
+
+.flex button {
+  margin: 8px auto;
+}
+
+body {
+  background-color: #EFCEFA;
+  transition: background 0.2s linear;
+}
+
+body.dark {
+  background-color: #292c35;
+  background-image: url(./black-gingham-plaid-bella-b.jpg);
+}
+
+body.dark h1 {
+  background-color: #292c35;
+  color: darkgray;
+}
+
+body.dark section#profile {
+  background-color: #292c35;
+  color: darkgray;
+}
+
+body.dark button {
+  background-color: darkgray;
+}
+
+.checkbox {
+  opacity: 0;
+  position: absolute;
+}
+
+.checkbox-label {
+  background-color: #111;
+  width: 40px;
+  height: 20px;
+  border-radius: 50px;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fa-moon {color: #f1c40f;}
+
+.fa-sun {color: #f39c12;}
+
+.checkbox-label .ball {
+  background-color: #fff;
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  border-radius: 50%;
+  transition: transform 0.2s linear;
+}
+
+.checkbox:checked + .checkbox-label .ball {
+  transform: translateX(24px);
 }
