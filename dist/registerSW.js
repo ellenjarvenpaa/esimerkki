@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/~ellenj/vite/sw.js', { scope: '/~ellenj/vite/' })})}
